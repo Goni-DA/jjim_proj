@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <title>홈페이지</title>
+        <link href="{{ url_for('static', filename='css/styles.css') }}" rel="stylesheet">
+    </head>
+
+    <body>
+        <p>홈페이지 렌더링 테스트</p>
+        <form name="form" action='/crawl' method="POST">
+            <input type="text" class="url" placeholder="url 주소입력" name="address"></input>
+            <input type="submit"></input>
+        </form>
+    </body>
+
+   
+</html>

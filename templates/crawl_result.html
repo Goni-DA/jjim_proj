@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+    <title>크롤링 결과조회</title>
+    </head>
+
+  <body>
+
+
+    <div class="crawl_contents">
+        <div class="crawl_inner_box">
+            <table id="crawl_table" class="table table-hover">
+                <thead>
+                  <tr id="crawl_title">
+                    <th class="cr_result">번호</th>
+                    <th class="cr_result">상품명</th>
+                    <th class="cr_result">찜개수</th>
+                    <th class="cr_result">상품링크</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for i in range(result_num) %}
+                    <tr>
+                      <td class="list" id="cr_num">{{ i+1 }}</td>
+                      <td class="list" id="cr_pdname">{{ result[i]['Name'] }}</td>
+                      <td class="list" id="cr_jjim">{{ result[i]['jjim'] }}</td>
+                      <td class="list" id="cr_link">{{ result[i]['link'] }}</td>
+                    </tr>
+                  {% endfor %}
+                </tbody>
+               </table>
+
+        </div>
+    </div>
+
+
+    <div id='button_crawl_insert' class="d-grid gap-2 col-1 mx-auto">
+    </div>
+  </body>
+</html>
