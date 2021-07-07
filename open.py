@@ -20,7 +20,7 @@ import numpy as np
 #웹드라이버 / URL 선언
 
 driver = webdriver.Chrome()
-url = 'https://search.shopping.naver.com/search/all?where=all&frm=NVSCTAB&query=%EB%B0%94%EB%94%94%EC%9B%8C%EC%8B%9C'
+url = 'https://search.shopping.naver.com/search/all?query=%EB%A9%94%EC%9D%B4%ED%81%AC%EC%97%85+%EB%B2%A0%EC%9D%B4%EC%8A%A4&cat_id=&frm=NVSHATC'
 driver.get(url)
 
 
@@ -38,10 +38,13 @@ def search_by_name(ask):
 
 
 # 현재 페이지에서 필요한 정보들을 받아보자
-def jjim_file(url, file_name):
-    driver = webdriver.Chrome()
+def jjim_file(url):
+    # 옵션 생성
+    options = webdriver.ChromeOptions()
+    # 창 숨기는 옵션 추가
+    options.add_argument("headless")
+    driver = webdriver.Chrome(options=options)
     driver.get(url)
-
     driver.execute_script('window.scrollTo(0, document.body.scrollHeight);')
     time.sleep(4)
 
@@ -79,11 +82,11 @@ def jjim_file(url, file_name):
 
     df = pd.DataFrame(list(zip(pn_list,jj_list,link_list)), columns = ['Name','jjim','link'])
     df_done = df.sort_values(by=['jjim'], ascending=False)
-    df_done.to_excel('{}.xlsx'.format(file_name), index=False)
+    df_done.to_excel('base_up.xlsx', index=False)
 
     return 
 
     
-jjim_file(url, file_name='바디워시')
+jjim_file(url)
 
 
