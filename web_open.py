@@ -7,7 +7,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import Select
 from selenium.webdriver.support.ui import WebDriverWait
-
+import datetime
 import time
 
 import pandas as pd
@@ -16,9 +16,9 @@ import numpy as np
 
 #웹드라이버 / URL 선언
 
-# driver = webdriver.Chrome()
-# url = 'https://search.shopping.naver.com/search/all?where=all&frm=NVSCTAB&query=%EB%B0%94%EB%94%94%EC%9B%8C%EC%8B%9C'
-# driver.get(url)
+driver = webdriver.Chrome()
+url = 'https://search.shopping.naver.com/search/all?where=all&frm=NVSCTAB&query=%EB%B0%94%EB%94%94%EC%9B%8C%EC%8B%9C'
+driver.get(url)
 
 
 
@@ -83,6 +83,13 @@ def jjim_file(url):
     df_done = df_done.reset_index(drop=True)
     result_dict = df_done.to_dict('index')
     result_num = len(result_dict)
+
+    #파일명에 현재시간 부여
+    mask = '%d%m%Y'
+    now = datetime.datetime.now().strftime(mask)
+    fname = 'crw_file_{}.xlsx'.format(now)
+    df_done.to_excel(fname)
+    
         
     return result_dict, result_num
 
