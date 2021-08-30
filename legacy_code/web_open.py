@@ -1,4 +1,8 @@
 
+#url이 주어졌을 때 네이버 쇼핑에서 정보를 크롤링해와서 엑셀파일로 저장하는 코드
+
+
+
 import selenium
 from selenium import webdriver
 from selenium.webdriver import ActionChains
@@ -78,17 +82,22 @@ def jjim_file(url):
         link_list.append(link.get_attribute('href'))
 
 
+    # 데이터를 데이터프레임으로
     df = pd.DataFrame(list(zip(pn_list,jj_list,link_list)), columns = ['Name','jjim','link'])
     df_done = df.sort_values(by=['jjim'], ascending=False)
     df_done = df_done.reset_index(drop=True)
     result_dict = df_done.to_dict('index')
     result_num = len(result_dict)
 
-    now = datetime.datetime.now()
-    df_done.to_excel('test.xlsx')
+    #파일명에 현재시간 부여
+    mask = '%m%d%Y'
+    now = datetime.datetime.now().strftime(mask)
+    fname = 'crw_file_{}.xlsx'.format(now)
+    df_done.to_excel(fname)
     
         
     return result_dict, result_num
 
 
-jjim_file(url)
+
+

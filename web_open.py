@@ -44,11 +44,12 @@ def jjim_file(url):
     driver.get(url)
 
     driver.execute_script('window.scrollTo(0, document.body.scrollHeight);')
-    time.sleep(4)
+    time.sleep(4) # 무작정 기다리는게 아니라 조건 성립할때 까지만 기다리는거 확인
 
     pn_list = []
     jj_list = []
     link_list = []
+    price_list = []
 
     # 품목명 가져오기
     product_name = driver.find_elements_by_css_selector('#__next > div > div.style_container__1YjHN > div >\
@@ -77,21 +78,28 @@ def jjim_file(url):
     for link in link_tag:
         link_list.append(link.get_attribute('href'))
 
+    # 금액 가져오기
+    price = driver.find_elements_by_css_selector('#__next > div > div.style_container__1YjHN > div > div.style_content_wrap__1PzEo >\
+                                 div.style_content__2T20F > ul > div > div> li > div > div.basicList_info_area__17Xyo > div.basicList_price_area__1UXXR >\
+                                 strong > span > span.price_num__2WUXn')
 
-    df = pd.DataFrame(list(zip(pn_list,jj_list,link_list)), columns = ['Name','jjim','link'])
+    # 금액 리스트화
+    for pri in price :
+        price_list.append(pri.text) #확인필요
+
+
+    df = pd.DataFrame(list(zip(pn_list,jj_list, price_list, link_list)), columns = ['Name','jjim','price','link'])
     df_done = df.sort_values(by=['jjim'], ascending=False)
+    print(df_done)
     df_done = df_done.reset_index(drop=True)
     result_dict = df_done.to_dict('index')
     result_num = len(result_dict)
-
-    #파일명에 현재시간 부여
-    mask = '%d%m%Y'
-    now = datetime.datetime.now().strftime(mask)
-    fname = 'crw_file_{}.xlsx'.format(now)
-    df_done.to_excel(fname)
     
         
     return result_dict, result_num
 
 
+def all_categories():
+    cat_list = []
+    여성_신발 = 'https://search.shopping.naver.com/search/category?catId=50000173&frm=NVSHCAT&origQuery&pagingIndex=1&pagingSize=40&productSet=total&query&sort=rel&timestamp=&viewType=list'
 
