@@ -87,9 +87,16 @@ def jjim_file(url):
     for pri in price :
         price_list.append(pri.text) #확인필요
 
+    # 조회기준 시간 열 추가
+
+
+    #파일명에 현재시간 부여
+    mask = '%m%d%Y'
+    now = datetime.datetime.now().strftime(mask)
 
     df = pd.DataFrame(list(zip(pn_list,jj_list, price_list, link_list)), columns = ['Name','jjim','price','link'])
     df_done = df.sort_values(by=['jjim'], ascending=False)
+    df_done['input_date'] = now
     print(df_done)
     df_done = df_done.reset_index(drop=True)
     result_dict = df_done.to_dict('index')
