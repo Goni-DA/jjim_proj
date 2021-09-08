@@ -13,6 +13,12 @@ cur = conn.cursor()
 sql = "SELECT * FROM pd_shampoo;"
 cur.execute(sql)
 
+
+# SQL insert 입력날짜 값을 추가하는 SQL문
+# Maria db에서는 curdate() 가 오늘날짜 출력함.
+
+
+
 # 완료한 데이터를 받음.
 rs = [cur.fetchall()]
 print(rs)

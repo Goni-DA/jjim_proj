@@ -7,6 +7,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import Select
 from selenium.webdriver.support.ui import WebDriverWait
+import sql_code.pd_sql_direct_conn as db_conn #데이터 베이스에 넣기 위한 SQL문 작성파일
 import datetime
 import time
 
@@ -90,8 +91,8 @@ def jjim_file(url):
     # 조회기준 시간 열 추가
 
 
-    #파일명에 현재시간 부여
-    mask = '%m%d%Y'
+    # 데이터 추출 기준 시간 추가
+    mask = '%Y%m%d'
     now = datetime.datetime.now().strftime(mask)
 
     df = pd.DataFrame(list(zip(pn_list,jj_list, price_list, link_list)), columns = ['Name','jjim','price','link'])
@@ -99,11 +100,15 @@ def jjim_file(url):
     df_done['input_date'] = now
     print(df_done)
     df_done = df_done.reset_index(drop=True)
-    result_dict = df_done.to_dict('index')
-    result_num = len(result_dict)
+
+    result = db_conn.sql_insert(df_done)
+    
+    # 데이터프레임을 dict형식으로 변경코드
+    # result_dict = df_done.to_dict('index')
+    # result_num = len(result_dict)
     
         
-    return result_dict, result_num
+    return print(result)
 
 
 def all_categories():
