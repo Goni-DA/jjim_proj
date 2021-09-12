@@ -1,7 +1,14 @@
 
+# 셀레니움 패키지를 활용하여 필요한 정보를 수집 후 업로드 하기 위한 코드입니다.
+
+# 웹 페이지에서 필요한 정보를 수집하는 함수 : jjim_file()
+# 사용자가 검색어를 입력하면, 해당 검색어의 결과에 맞춘 url을 반환.
+# 반환한 url을 기반으로 데이터를 수집하고(db 적재), 적재한 데이터에서 Top 5개를 불러옵니다.
+
 import selenium
 from selenium import webdriver
 from selenium.webdriver import ActionChains
+from selenium.webdriver.chrome import options
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
@@ -14,25 +21,26 @@ import time
 import pandas as pd
 import numpy as np
 
-
-#웹드라이버 / URL 선언
-
-driver = webdriver.Chrome()
-url = 'https://search.shopping.naver.com/search/all?where=all&frm=NVSCTAB&query=%EB%B0%94%EB%94%94%EC%9B%8C%EC%8B%9C'
-driver.get(url)
-
-
-
+options = webdriver.ChromeOptions()
+    # 창 숨기는 옵션 추가
+options.add_argument("headless")
+driver = webdriver.Chrome(options=options)
 
 # 검색어를 입력하고, 자동으로 입력결과 페이지를 출력하는 함수
-def search_by_name(ask):
-    elem = driver.find_element_by_class_name("searchInput_search_input__1Eclz")
-    elem.clear()
-    elem.send_keys(ask)
-    driver.implicitly_wait(time_to_wait=5)
-    driver.execute_script('window.scrollTo(0, document.body.scrollHeight);')
-    result = elem.send_keys(Keys.RETURN)
-    return result
+def return_url():
+    ask = input()
+    driver.get('https://shopping.naver.com/home/p/index.naver')
+    
+    # 검색어 입력
+    xpath2 = "//input[@class='co_srh_input _input N=a:SNB.search']"  # //는 이전 경로들을 축약한 뜻
+    driver.find_element_by_xpath(xpath2)
+    driver.find_element_by_xpath(xpath2).clear()
+    driver.find_element_by_xpath(xpath2).send_keys(ask)
+    driver.find_element_by_xpath('//*[@id="autocompleteWrapper"]/a[2]').click()
+    driver.implicitly_wait(time_to_wait=2)
+    current_url_ = driver.current_url
+    
+    return current_url_
 
 
 # 현재 페이지에서 필요한 정보들을 받아보자
@@ -45,7 +53,7 @@ def jjim_file(url):
     driver.get(url)
 
     driver.execute_script('window.scrollTo(0, document.body.scrollHeight);')
-    time.sleep(4) # 무작정 기다리는게 아니라 조건 성립할때 까지만 기다리는거 확인
+    time.sleep(4) # 무작정 기다리는게 아니라 조건 성립할때 까지만 기다리는 기능 추가 필요
 
     pn_list = []
     jj_list = []
@@ -95,10 +103,14 @@ def jjim_file(url):
     mask = '%Y%m%d'
     now = datetime.datetime.now().strftime(mask)
 
-    df = pd.DataFrame(list(zip(pn_list,jj_list, price_list, link_list)), columns = ['Name','jjim','price','link'])
-    df_done = df.sort_values(by=['jjim'], ascending=False)
-    df_done['input_date'] = now
-    print(df_done)
+    df = pd.DataFrame(list(zip(pn_list,jj_list, price_list, link_list)), columns = ['sham_name','jjim_num','price_list','link'])
+    df_done = df.sort_values(by=['jjim_num'], ascending=False)
+    df_done['add_date'] = now
+    print('**** 데이터프레임 생성완료')
+    # print용 변수
+    data_num = len(df_done)
+
+    print('**** 수집된 데이터는 {}개 입니다.'.format(data_num))
     df_done = df_done.reset_index(drop=True)
 
     result = db_conn.sql_insert(df_done)

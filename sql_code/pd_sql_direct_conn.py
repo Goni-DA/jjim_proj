@@ -6,9 +6,6 @@ from sqlalchemy import create_engine
 
 
 import pandas as pd
-data=[{'pn_list':1,'jjim_num':1,'price_list':1,'link':1,'add_date':1}]
-df_test = pd.DataFrame(data = data, columns=['pn_list','jjim_num','price_list','link','add_date'])
-print(df_test)
 
 
 db_connection_str = "mysql+pymysql://{user}:{pw}@127.0.0.1/{db}".format(user='root', pw='maria1234', db='jjim_prj_db')
@@ -17,14 +14,38 @@ conn = db_connection.connect()
 
 def sql_insert (dataframe):
     df = pd.DataFrame(data=dataframe, columns=['sham_name','jjim_num','price_list','link','add_date'])
-    df.to_sql(name='pd_shampoo', con=db_connection, if_exists='append',index=False)  
+    
+    dtypesql = {'sham_name':sqlalchemy.types.VARCHAR(200), 
+          'jjim_num':sqlalchemy.INT(), 
+          'price_list':sqlalchemy.types.VARCHAR(50), 
+          'link':sqlalchemy.types.VARCHAR(5000), 
+          'add_date':sqlalchemy.types.VARCHAR(30) 
+        }
 
+    df.to_sql(name='pd_shampoo', con=db_connection, if_exists='append',index=False, dtype=dtypesql)  
+
+    
     cnt_done = len(df) 
-    result = 'SQL문 삽입결과  :{}건 삽입되었습니다.'.format(cnt_done)
+    result = '**** SQL문 삽입결과  :{}건 삽입되었습니다.'.format(cnt_done)
     return result
 
 
-sql_insert(df_test)
+conn2 = pymysql.connect(
+        user="root",
+        password="maria1234",
+        host="127.0.0.1",
+        port=3306,
+        database="jjim_prj_db"
+    )
+
+def sql_select():
+    cur = conn2.cursor()
+    cur.execute('select * from pd_shampoo')
+    res = cur.fetchall()
+    data = pd.DataFrame.from_records(res)
+    print(data)
+    return data
+
 
 
 

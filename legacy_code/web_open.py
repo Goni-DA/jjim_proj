@@ -20,11 +20,6 @@ import numpy as np
 
 #웹드라이버 / URL 선언
 
-driver = webdriver.Chrome()
-url = 'https://search.shopping.naver.com/search/all?where=all&frm=NVSCTAB&query=%EB%B0%94%EB%94%94%EC%9B%8C%EC%8B%9C'
-driver.get(url)
-
-
 
 
 # 검색어를 입력하고, 자동으로 입력결과 페이지를 출력하는 함수
