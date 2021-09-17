@@ -9,11 +9,11 @@ import sql_code.pd_sql_direct_conn as db_conn
 url = wo.return_url()
 
 #DB로 저장
-#wo.jjim_file(url)
+wo.jjim_file(url)
 
 
 #엑셀파일 저장시
-lwo.jjim_file(url)
+#lwo.jjim_file(url)
 
 #DB 삽입된 정보 가져오기
 db_conn.sql_select()
